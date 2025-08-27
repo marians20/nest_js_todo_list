@@ -1,26 +1,46 @@
-export interface Todo {
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { UserEntity } from '../../auth/entities/user.entity';
+import type { Priority } from '../../../shared/types/common.types';
+
+@Entity('todos')
+export class TodoEntity {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ type: 'varchar', length: 200 })
   title: string;
+
+  @Column({ type: 'text', nullable: true })
   description?: string;
+
+  @Column({ type: 'boolean', default: false })
   completed: boolean;
+
+  @CreateDateColumn({ type: 'datetime' })
   createdAt: Date;
+
+  @UpdateDateColumn({ type: 'datetime' })
   updatedAt: Date;
+
+  @Column({ type: 'datetime', nullable: true })
   dueDate?: Date;
-  priority: 'low' | 'medium' | 'high';
-}
 
-export class TodoEntity implements Todo {
-  constructor(
-    public id: string,
-    public title: string,
-    public completed: boolean = false,
-    public createdAt: Date = new Date(),
-    public updatedAt: Date = new Date(),
-    public description?: string,
-    public dueDate?: Date,
-    public priority: 'low' | 'medium' | 'high' = 'medium',
-  ) {}
+  @Column({
+    type: 'varchar',
+    length: 10,
+    default: 'medium',
+    enum: ['low', 'medium', 'high'],
+  })
+  priority: Priority;
 
+  @Column({ type: 'varchar' })
+  userId: string;
+
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
+  user: UserEntity;
+
+  // Business logic methods
   markCompleted(): void {
     this.completed = true;
     this.updatedAt = new Date();
@@ -41,7 +61,7 @@ export class TodoEntity implements Todo {
     this.updatedAt = new Date();
   }
 
-  updatePriority(priority: 'low' | 'medium' | 'high'): void {
+  updatePriority(priority: Priority): void {
     this.priority = priority;
     this.updatedAt = new Date();
   }

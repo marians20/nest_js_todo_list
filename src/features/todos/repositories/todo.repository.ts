@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan } from 'typeorm';
 import { TodoEntity } from '../entities/todo.entity';
-import { ITodoRepository } from './todo.repository.interface';
-import type { Priority } from '../types/common.types';
+import { ITodoRepository } from './interfaces/todo.repository.interface';
+import type { Priority } from '../../../shared/types/common.types';
 
 @Injectable()
 export class TodoRepository implements ITodoRepository {

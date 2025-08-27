@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import type { Priority } from '../types/common.types';
+import type { Priority } from '../../../shared/types/common.types';
 
 export class CreateTodoDto {
   @ApiProperty({

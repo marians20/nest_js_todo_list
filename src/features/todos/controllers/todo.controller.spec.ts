@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TodoController } from './todo.controller';
 import { TodoService } from '../services/todo.service';
 import { CreateTodoDto, UpdateTodoDto, TodoResponseDto } from '../dto/todo.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 describe('TodoController', () => {
   let controller: TodoController;

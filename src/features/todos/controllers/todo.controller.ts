@@ -3,10 +3,10 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody, ApiBea
 import { Request as ExpressRequest } from 'express';
 import { TodoService } from '../services/todo.service';
 import { CreateTodoDto, UpdateTodoDto, TodoResponseDto } from '../dto/todo.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import type { Priority } from '../types/common.types';
-import { PRIORITY_VALUES } from '../types/common.types';
-import { AuthenticatedUser } from '../types/auth.types';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import type { Priority } from '../../../shared/types/common.types';
+import { PRIORITY_VALUES } from '../../../shared/types/common.types';
+import { AuthenticatedUser } from '../../../shared/types/auth.types';
 
 interface RequestWithUser extends ExpressRequest {
   user: AuthenticatedUser;

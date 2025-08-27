@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { TodoEntity } from '../entities/todo.entity';
 import { CreateTodoDto, UpdateTodoDto, TodoResponseDto } from '../dto/todo.dto';
-import type { ITodoRepository } from '../repositories/todo.repository.interface';
-import type { Priority } from '../types/common.types';
+import type { ITodoRepository } from '../repositories/interfaces/todo.repository.interface';
+import type { Priority } from '../../../shared/types/common.types';
 
 @Injectable()
 export class TodoService {

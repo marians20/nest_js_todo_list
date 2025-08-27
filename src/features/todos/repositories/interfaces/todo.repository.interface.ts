@@ -1,5 +1,5 @@
-import { TodoEntity } from '../entities/todo.entity';
-import type { Priority } from '../types/common.types';
+import { TodoEntity } from '../../entities/todo.entity';
+import type { Priority } from '../../../../shared/types/common.types';
 
 export interface ITodoRepository {
   create(todo: Partial<TodoEntity>): Promise<TodoEntity>;
