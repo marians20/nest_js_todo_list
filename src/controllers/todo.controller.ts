@@ -1,17 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { Request as ExpressRequest } from 'express';
 import { TodoService } from '../services/todo.service';
 import { CreateTodoDto, UpdateTodoDto, TodoResponseDto } from '../dto/todo.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { Priority } from '../types/common.types';
 import { PRIORITY_VALUES } from '../types/common.types';
+import { AuthenticatedUser } from '../types/auth.types';
 
-interface RequestWithUser extends Request {
-  user: {
-    id: string;
-    username: string;
-    email: string;
-  };
+interface RequestWithUser extends ExpressRequest {
+  user: AuthenticatedUser;
 }
 
 @ApiTags('todos')

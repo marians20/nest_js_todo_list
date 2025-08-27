@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { IUserRepository } from '../repositories/interfaces/user.repository.interface';
 import { UserEntity } from '../entities/user.entity';
 import { RegisterUserDto, LoginUserDto } from '../dto/user.dto';
+import { JwtPayload } from '../types/auth.types';
 
 // Mock bcrypt
 jest.mock('bcrypt');
@@ -99,7 +100,7 @@ describe('UserService', () => {
         email: mockUser.email,
         username: mockUser.username,
         roles: mockUser.roles,
-      });
+      } as JwtPayload);
 
       expect(result).toEqual({
         user: {
@@ -157,7 +158,7 @@ describe('UserService', () => {
         email: mockUser.email,
         username: mockUser.username,
         roles: mockUser.roles,
-      });
+      } as JwtPayload);
 
       expect(result).toEqual({
         user: {

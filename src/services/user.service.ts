@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import type { IUserRepository } from '../repositories/interfaces/user.repository.interface';
 import { UserEntity } from '../entities/user.entity';
 import { RegisterUserDto, LoginUserDto, UserResponseDto } from '../dto/user.dto';
+import { JwtPayload } from '../types/auth.types';
 
 @Injectable()
 export class UserService {
@@ -81,7 +82,7 @@ export class UserService {
   }
 
   private generateToken(user: UserEntity): string {
-    const payload = {
+    const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
       username: user.username,
