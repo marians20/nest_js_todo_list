@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan } from 'typeorm';
 import { TodoEntity } from '../entities/todo.entity';
 import { ITodoRepository } from './todo.repository.interface';
+import type { Priority } from '../types/common.types';
 
 @Injectable()
 export class TodoRepository implements ITodoRepository {
@@ -33,9 +34,7 @@ export class TodoRepository implements ITodoRepository {
     });
   }
 
-  async findByPriority(
-    priority: 'low' | 'medium' | 'high',
-  ): Promise<TodoEntity[]> {
+  async findByPriority(priority: Priority): Promise<TodoEntity[]> {
     return await this.todoRepository.find({
       where: { priority },
       order: { createdAt: 'DESC' },
@@ -134,10 +133,7 @@ export class TodoRepository implements ITodoRepository {
     });
   }
 
-  async findByPriorityAndUser(
-    priority: 'low' | 'medium' | 'high',
-    userId: string,
-  ): Promise<TodoEntity[]> {
+  async findByPriorityAndUser(priority: Priority, userId: string): Promise<TodoEntity[]> {
     return await this.todoRepository.find({
       where: { priority, userId },
       order: { createdAt: 'DESC' },

@@ -1,13 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
+import type { Priority } from '../types/common.types';
 
 @Entity('todos')
 export class TodoEntity {
@@ -38,7 +31,7 @@ export class TodoEntity {
     default: 'medium',
     enum: ['low', 'medium', 'high'],
   })
-  priority: 'low' | 'medium' | 'high';
+  priority: Priority;
 
   @Column({ type: 'varchar' })
   userId: string;
@@ -68,7 +61,7 @@ export class TodoEntity {
     this.updatedAt = new Date();
   }
 
-  updatePriority(priority: 'low' | 'medium' | 'high'): void {
+  updatePriority(priority: Priority): void {
     this.priority = priority;
     this.updatedAt = new Date();
   }

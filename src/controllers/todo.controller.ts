@@ -1,27 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiQuery,
-  ApiBody,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { TodoService } from '../services/todo.service';
 import { CreateTodoDto, UpdateTodoDto, TodoResponseDto } from '../dto/todo.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import type { Priority } from '../types/common.types';
+import { PRIORITY_VALUES } from '../types/common.types';
 
 interface RequestWithUser extends Request {
   user: {
@@ -51,18 +34,14 @@ export class TodoController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  create(
-    @Body() createTodoDto: CreateTodoDto,
-    @Request() req: RequestWithUser,
-  ) {
+  create(@Body() createTodoDto: CreateTodoDto, @Request() req: RequestWithUser) {
     return this.todoService.create(createTodoDto, req.user.id);
   }
 
   @Get()
   @ApiOperation({
     summary: 'Get all todos',
-    description:
-      'Retrieves all todos with optional filtering by status and priority',
+    description: 'Retrieves all todos with optional filtering by status and priority',
   })
   @ApiQuery({
     name: 'status',
@@ -81,24 +60,17 @@ export class TodoController {
     description: 'List of todos retrieved successfully',
     type: [TodoResponseDto],
   })
-  findAll(
-    @Query('status') status: string,
-    @Query('priority') priority: string,
-    @Request() req: RequestWithUser,
-  ) {
+  findAll(@Query('status') status: string, @Query('priority') priority: string, @Request() req: RequestWithUser) {
     const userId = req.user.id;
-    
+
     if (status === 'completed') {
       return this.todoService.findByStatus(true, userId);
     }
     if (status === 'pending') {
       return this.todoService.findByStatus(false, userId);
     }
-    if (priority && ['low', 'medium', 'high'].includes(priority)) {
-      return this.todoService.findByPriority(
-        priority as 'low' | 'medium' | 'high',
-        userId,
-      );
+    if (priority && PRIORITY_VALUES.includes(priority as Priority)) {
+      return this.todoService.findByPriority(priority as Priority, userId);
     }
     return this.todoService.findAll(userId);
   }
@@ -106,8 +78,7 @@ export class TodoController {
   @Get('overdue')
   @ApiOperation({
     summary: 'Get overdue todos',
-    description:
-      'Retrieves all todos that are past their due date and not completed',
+    description: 'Retrieves all todos that are past their due date and not completed',
   })
   @ApiResponse({
     status: 200,
@@ -158,11 +129,7 @@ export class TodoController {
   })
   @ApiResponse({ status: 404, description: 'Todo not found' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
-  update(
-    @Param('id') id: string,
-    @Body() updateTodoDto: UpdateTodoDto,
-    @Request() req: RequestWithUser,
-  ) {
+  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto, @Request() req: RequestWithUser) {
     return this.todoService.update(id, updateTodoDto, req.user.id);
   }
 
@@ -185,8 +152,7 @@ export class TodoController {
       properties: {
         message: {
           type: 'string',
-          example:
-            'Todo with ID 550e8400-e29b-41d4-a716-446655440000 has been deleted',
+          example: 'Todo with ID 550e8400-e29b-41d4-a716-446655440000 has been deleted',
         },
       },
     },

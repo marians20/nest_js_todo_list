@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { UserService } from '../services/user.service';
-import { RegisterUserDto, LoginUserDto, UserResponseDto } from '../dto/user.dto';
+import { RegisterUserDto, LoginUserDto } from '../dto/user.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -17,9 +17,9 @@ export class AuthController {
     schema: {
       properties: {
         user: { $ref: '#/components/schemas/UserResponseDto' },
-        token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
-      }
-    }
+        token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
+      },
+    },
   })
   @ApiResponse({ status: 409, description: 'User already exists' })
   async register(@Body() registerDto: RegisterUserDto) {
@@ -36,9 +36,9 @@ export class AuthController {
     schema: {
       properties: {
         user: { $ref: '#/components/schemas/UserResponseDto' },
-        token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
-      }
-    }
+        token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(@Body() loginDto: LoginUserDto) {

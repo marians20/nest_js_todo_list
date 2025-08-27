@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { Priority } from '../types/common.types';
 
 export class CreateTodoDto {
   @ApiProperty({
@@ -30,7 +31,7 @@ export class CreateTodoDto {
     example: 'high',
     default: 'medium',
   })
-  priority?: 'low' | 'medium' | 'high';
+  priority?: Priority;
 }
 
 export class UpdateTodoDto {
@@ -44,8 +45,7 @@ export class UpdateTodoDto {
 
   @ApiPropertyOptional({
     description: 'Updated description of the todo item',
-    example:
-      'Complete advanced NestJS concepts including GraphQL and microservices',
+    example: 'Complete advanced NestJS concepts including GraphQL and microservices',
     maxLength: 1000,
   })
   description?: string;
@@ -69,7 +69,7 @@ export class UpdateTodoDto {
     enum: ['low', 'medium', 'high'],
     example: 'high',
   })
-  priority?: 'low' | 'medium' | 'high';
+  priority?: Priority;
 }
 
 export class TodoResponseDto {
@@ -124,7 +124,7 @@ export class TodoResponseDto {
     enum: ['low', 'medium', 'high'],
     example: 'high',
   })
-  priority: 'low' | 'medium' | 'high';
+  priority: Priority;
 
   @ApiProperty({
     description: 'Whether the todo item is overdue',

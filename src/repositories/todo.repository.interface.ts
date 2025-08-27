@@ -1,4 +1,5 @@
 import { TodoEntity } from '../entities/todo.entity';
+import type { Priority } from '../types/common.types';
 
 export interface ITodoRepository {
   create(todo: Partial<TodoEntity>): Promise<TodoEntity>;
@@ -8,8 +9,8 @@ export interface ITodoRepository {
   findByIdAndUser(id: string, userId: string): Promise<TodoEntity | null>;
   findByStatus(completed: boolean): Promise<TodoEntity[]>;
   findByStatusAndUser(completed: boolean, userId: string): Promise<TodoEntity[]>;
-  findByPriority(priority: 'low' | 'medium' | 'high'): Promise<TodoEntity[]>;
-  findByPriorityAndUser(priority: 'low' | 'medium' | 'high', userId: string): Promise<TodoEntity[]>;
+  findByPriority(priority: Priority): Promise<TodoEntity[]>;
+  findByPriorityAndUser(priority: Priority, userId: string): Promise<TodoEntity[]>;
   findOverdue(): Promise<TodoEntity[]>;
   findOverdueByUser(userId: string): Promise<TodoEntity[]>;
   update(id: string, updateData: Partial<TodoEntity>): Promise<TodoEntity>;

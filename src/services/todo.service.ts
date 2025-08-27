@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { TodoEntity } from '../entities/todo.entity';
 import { CreateTodoDto, UpdateTodoDto, TodoResponseDto } from '../dto/todo.dto';
 import type { ITodoRepository } from '../repositories/todo.repository.interface';
+import type { Priority } from '../types/common.types';
 
 @Injectable()
 export class TodoService {
@@ -65,7 +66,7 @@ export class TodoService {
     return todos.map(todo => this.toResponseDto(todo));
   }
 
-  async findByPriority(priority: 'low' | 'medium' | 'high', userId: string): Promise<TodoResponseDto[]> {
+  async findByPriority(priority: Priority, userId: string): Promise<TodoResponseDto[]> {
     const todos = await this.todoRepository.findByPriorityAndUser(priority, userId);
     return todos.map(todo => this.toResponseDto(todo));
   }
