@@ -10,16 +10,11 @@ export class TodoService {
     private readonly todoRepository: ITodoRepository,
   ) {}
 
-  async create(
-    createTodoDto: CreateTodoDto,
-    userId: string,
-  ): Promise<TodoResponseDto> {
+  async create(createTodoDto: CreateTodoDto, userId: string): Promise<TodoResponseDto> {
     const todoData: Partial<TodoEntity> = {
       title: createTodoDto.title,
       description: createTodoDto.description,
-      dueDate: createTodoDto.dueDate
-        ? new Date(createTodoDto.dueDate)
-        : undefined,
+      dueDate: createTodoDto.dueDate ? new Date(createTodoDto.dueDate) : undefined,
       priority: createTodoDto.priority || 'medium',
       completed: false,
       userId,
@@ -31,7 +26,7 @@ export class TodoService {
 
   async findAll(userId: string): Promise<TodoResponseDto[]> {
     const todos = await this.todoRepository.findAllByUser(userId);
-    return todos.map((todo) => this.toResponseDto(todo));
+    return todos.map(todo => this.toResponseDto(todo));
   }
 
   async findOne(id: string, userId: string): Promise<TodoResponseDto> {
@@ -67,20 +62,17 @@ export class TodoService {
 
   async findByStatus(completed: boolean, userId: string): Promise<TodoResponseDto[]> {
     const todos = await this.todoRepository.findByStatusAndUser(completed, userId);
-    return todos.map((todo) => this.toResponseDto(todo));
+    return todos.map(todo => this.toResponseDto(todo));
   }
 
-  async findByPriority(
-    priority: 'low' | 'medium' | 'high',
-    userId: string,
-  ): Promise<TodoResponseDto[]> {
+  async findByPriority(priority: 'low' | 'medium' | 'high', userId: string): Promise<TodoResponseDto[]> {
     const todos = await this.todoRepository.findByPriorityAndUser(priority, userId);
-    return todos.map((todo) => this.toResponseDto(todo));
+    return todos.map(todo => this.toResponseDto(todo));
   }
 
   async findOverdue(userId: string): Promise<TodoResponseDto[]> {
     const todos = await this.todoRepository.findOverdueByUser(userId);
-    return todos.map((todo) => this.toResponseDto(todo));
+    return todos.map(todo => this.toResponseDto(todo));
   }
 
   async markCompleted(id: string, userId: string): Promise<TodoResponseDto> {

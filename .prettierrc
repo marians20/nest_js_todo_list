@@ -1,5 +1,15 @@
 {
   "singleQuote": true,
   "trailingComma": "all",
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "printWidth": 150,
+  "tabWidth": 2,
+  "semi": true,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "singleAttributePerLine": false,
+  "useTabs": false,
+  "quoteProps": "as-needed",
+  "bracketSameLine": false,
+  "proseWrap": "preserve"
 }

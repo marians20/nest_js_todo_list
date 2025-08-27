@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, MinLength, IsOptional } from 'class-validator';
+import { IsString, IsEmail, MinLength } from 'class-validator';
 
 export class RegisterUserDto {
   @ApiProperty({ example: 'john_doe' })
@@ -40,6 +40,10 @@ export class UserResponseDto {
   @ApiProperty({ type: [String] })
   roles: string[];
 
-  @ApiProperty()
-  createdAt: Date;
+  @ApiProperty({
+    description: 'Creation timestamp (ISO 8601 format)',
+    example: '2024-08-26T10:30:00.000Z',
+    format: 'date-time',
+  })
+  createdAt: string;
 }

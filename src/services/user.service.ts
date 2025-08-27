@@ -96,7 +96,7 @@ export class UserService {
       username: user.username,
       email: user.email,
       roles: user.roles,
-      createdAt: user.createdAt,
+      createdAt: user.createdAt.toISOString(),
     };
   }
 }
