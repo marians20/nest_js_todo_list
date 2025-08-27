@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,11 +17,23 @@ import {
   ApiParam,
   ApiQuery,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { TodoService } from '../services/todo.service';
 import { CreateTodoDto, UpdateTodoDto, TodoResponseDto } from '../dto/todo.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
+interface RequestWithUser extends Request {
+  user: {
+    id: string;
+    username: string;
+    email: string;
+  };
+}
 
 @ApiTags('todos')
+@ApiBearerAuth('JWT-auth')
+@UseGuards(JwtAuthGuard)
 @Controller('todos')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
@@ -36,8 +50,12 @@ export class TodoController {
     type: TodoResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
-  create(@Body() createTodoDto: CreateTodoDto) {
-    return this.todoService.create(createTodoDto);
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  create(
+    @Body() createTodoDto: CreateTodoDto,
+    @Request() req: RequestWithUser,
+  ) {
+    return this.todoService.create(createTodoDto, req.user.id);
   }
 
   @Get()
@@ -64,21 +82,25 @@ export class TodoController {
     type: [TodoResponseDto],
   })
   findAll(
-    @Query('status') status?: string,
-    @Query('priority') priority?: string,
+    @Query('status') status: string,
+    @Query('priority') priority: string,
+    @Request() req: RequestWithUser,
   ) {
+    const userId = req.user.id;
+    
     if (status === 'completed') {
-      return this.todoService.findByStatus(true);
+      return this.todoService.findByStatus(true, userId);
     }
     if (status === 'pending') {
-      return this.todoService.findByStatus(false);
+      return this.todoService.findByStatus(false, userId);
     }
     if (priority && ['low', 'medium', 'high'].includes(priority)) {
       return this.todoService.findByPriority(
         priority as 'low' | 'medium' | 'high',
+        userId,
       );
     }
-    return this.todoService.findAll();
+    return this.todoService.findAll(userId);
   }
 
   @Get('overdue')
@@ -92,8 +114,8 @@ export class TodoController {
     description: 'List of overdue todos retrieved successfully',
     type: [TodoResponseDto],
   })
-  findOverdue() {
-    return this.todoService.findOverdue();
+  findOverdue(@Request() req: RequestWithUser) {
+    return this.todoService.findOverdue(req.user.id);
   }
 
   @Get(':id')
@@ -113,8 +135,8 @@ export class TodoController {
     type: TodoResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Todo not found' })
-  findOne(@Param('id') id: string) {
-    return this.todoService.findOne(id);
+  findOne(@Param('id') id: string, @Request() req: RequestWithUser) {
+    return this.todoService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
@@ -136,8 +158,12 @@ export class TodoController {
   })
   @ApiResponse({ status: 404, description: 'Todo not found' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todoService.update(id, updateTodoDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateTodoDto: UpdateTodoDto,
+    @Request() req: RequestWithUser,
+  ) {
+    return this.todoService.update(id, updateTodoDto, req.user.id);
   }
 
   @Delete(':id')
@@ -166,8 +192,8 @@ export class TodoController {
     },
   })
   @ApiResponse({ status: 404, description: 'Todo not found' })
-  remove(@Param('id') id: string) {
-    this.todoService.remove(id);
+  async remove(@Param('id') id: string, @Request() req: RequestWithUser) {
+    await this.todoService.remove(id, req.user.id);
     return { message: `Todo with ID ${id} has been deleted` };
   }
 
@@ -188,8 +214,8 @@ export class TodoController {
     type: TodoResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Todo not found' })
-  markCompleted(@Param('id') id: string) {
-    return this.todoService.markCompleted(id);
+  markCompleted(@Param('id') id: string, @Request() req: RequestWithUser) {
+    return this.todoService.markCompleted(id, req.user.id);
   }
 
   @Patch(':id/incomplete')
@@ -209,7 +235,7 @@ export class TodoController {
     type: TodoResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Todo not found' })
-  markIncomplete(@Param('id') id: string) {
-    return this.todoService.markIncomplete(id);
+  markIncomplete(@Param('id') id: string, @Request() req: RequestWithUser) {
+    return this.todoService.markIncomplete(id, req.user.id);
   }
 }

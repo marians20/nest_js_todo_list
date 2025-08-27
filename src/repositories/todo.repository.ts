@@ -112,4 +112,89 @@ export class TodoRepository implements ITodoRepository {
       .orderBy('todo.createdAt', 'DESC')
       .getMany();
   }
+
+  // User-specific methods
+  async findAllByUser(userId: string): Promise<TodoEntity[]> {
+    return await this.todoRepository.find({
+      where: { userId },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async findByIdAndUser(id: string, userId: string): Promise<TodoEntity | null> {
+    return await this.todoRepository.findOne({ 
+      where: { id, userId } 
+    });
+  }
+
+  async findByStatusAndUser(completed: boolean, userId: string): Promise<TodoEntity[]> {
+    return await this.todoRepository.find({
+      where: { completed, userId },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async findByPriorityAndUser(
+    priority: 'low' | 'medium' | 'high',
+    userId: string,
+  ): Promise<TodoEntity[]> {
+    return await this.todoRepository.find({
+      where: { priority, userId },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async findOverdueByUser(userId: string): Promise<TodoEntity[]> {
+    const now = new Date();
+    return await this.todoRepository
+      .createQueryBuilder('todo')
+      .where('todo.dueDate < :now', { now })
+      .andWhere('todo.completed = :completed', { completed: false })
+      .andWhere('todo.userId = :userId', { userId })
+      .orderBy('todo.dueDate', 'ASC')
+      .getMany();
+  }
+
+  async updateByUser(
+    id: string,
+    updateData: Partial<TodoEntity>,
+    userId: string,
+  ): Promise<TodoEntity> {
+    const todo = await this.findByIdAndUser(id, userId);
+    if (!todo) {
+      throw new Error('Todo not found or access denied');
+    }
+    
+    await this.todoRepository.update({ id, userId }, updateData);
+    const updatedTodo = await this.findByIdAndUser(id, userId);
+    if (!updatedTodo) {
+      throw new Error('Failed to update todo');
+    }
+    return updatedTodo;
+  }
+
+  async deleteByUser(id: string, userId: string): Promise<void> {
+    const result = await this.todoRepository.delete({ id, userId });
+    if (result.affected === 0) {
+      throw new Error('Todo not found or access denied');
+    }
+  }
+
+  async findByTitleSearchAndUser(searchTerm: string, userId: string): Promise<TodoEntity[]> {
+    return await this.todoRepository
+      .createQueryBuilder('todo')
+      .where('todo.title LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .andWhere('todo.userId = :userId', { userId })
+      .orderBy('todo.createdAt', 'DESC')
+      .getMany();
+  }
+
+  async countByStatusAndUser(userId: string): Promise<{ completed: number; pending: number }> {
+    const [completed, pending] = await Promise.all([
+      this.todoRepository.count({ where: { completed: true, userId } }),
+      this.todoRepository.count({ where: { completed: false, userId } }),
+    ]);
+
+    return { completed, pending };
+  }
 }

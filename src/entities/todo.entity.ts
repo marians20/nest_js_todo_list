@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { UserEntity } from './user.entity';
 
 @Entity('todos')
 export class TodoEntity {
@@ -36,6 +39,13 @@ export class TodoEntity {
     enum: ['low', 'medium', 'high'],
   })
   priority: 'low' | 'medium' | 'high';
+
+  @Column({ type: 'varchar' })
+  userId: string;
+
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
+  user: UserEntity;
 
   // Business logic methods
   markCompleted(): void {

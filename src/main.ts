@@ -12,6 +12,18 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('todos', 'Todo management endpoints')
     .addTag('app', 'Application health endpoints')
+    .addTag('Authentication', 'User authentication endpoints')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
